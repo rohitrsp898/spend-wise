@@ -9,7 +9,7 @@ import AIAdvisor from './components/AIAdvisor';
 import { ViewState, Expense, Category, UserSettings } from './types';
 import * as storage from './utils/storage';
 import { auth } from './utils/firebase';
-import * as firebaseAuth from 'firebase/auth';
+import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { DEFAULT_SETTINGS } from './constants';
 import { Plus, Loader2, AlertTriangle } from 'lucide-react';
 
@@ -21,7 +21,7 @@ const App: React.FC = () => {
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [authError, setAuthError] = useState<any>(null);
-  
+
   // Edit/Add Modal State
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
@@ -29,13 +29,13 @@ const App: React.FC = () => {
   // Authentication & Data Subscription
   useEffect(() => {
     // 1. Listen for Auth State
-    const unsubAuth = firebaseAuth.onAuthStateChanged(auth, (user) => {
+    const unsubAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsAuthReady(true);
         setAuthError(null);
       } else {
         // 2. Sign in anonymously if not authenticated
-        firebaseAuth.signInAnonymously(auth).catch((error) => {
+        signInAnonymously(auth).catch((error) => {
           console.error("Authentication failed:", error);
           setAuthError(error);
         });
