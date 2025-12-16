@@ -15,15 +15,6 @@ const firebaseConfig = {
   appId: process.env.VITE_FIREBASE_APP_ID
 };
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAVpLtd1EbbP2LBQ1BYmoPCRbGWx-E9w7w",
-  authDomain: "graphicvortex-1e1e3.firebaseapp.com",
-  projectId: "graphicvortex-1e1e3",
-  storageBucket: "graphicvortex-1e1e3.firebasestorage.app",
-  messagingSenderId: "901456916552",
-  appId: "1:901456916552:web:50747282f3230ffac7a87d",
-  measurementId: "G-LY6P273BLC"
-};
 
 const app = initializeApp(firebaseConfig);
 
