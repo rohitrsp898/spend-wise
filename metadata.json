@@ -1,0 +1,5 @@
+{
+  "name": "SpendWise Offline",
+  "description": "A privacy-focused, offline-first budget manager adapted for the web. Features manual tracking, regex-based text parsing for transaction messages, and optional AI-powered financial insights.",
+  "requestFramePermissions": []
+}
