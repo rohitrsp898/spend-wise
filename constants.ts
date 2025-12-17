@@ -1,7 +1,7 @@
 import { Category, UserSettings } from './types';
 
 export const DEFAULT_CATEGORIES: Category[] = [
-  { id: '1', name: 'Food', color: '#EF4444', budget: 0 },
+  { id: '1', name: 'Food', color: '#e0bd0dff', budget: 0 },
   { id: '2', name: 'Travel', color: '#3B82F6', budget: 0 },
   { id: '3', name: 'Shopping', color: '#F59E0B', budget: 0 },
   { id: '4', name: 'Bills', color: '#10B981', budget: 0 },
@@ -10,8 +10,8 @@ export const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 export const DEFAULT_SETTINGS: UserSettings = {
-  currencySymbol: '$',
-  monthlyBudget: 2000,
+  currencySymbol: '₹',
+  monthlyBudget: 15000,
   isDarkMode: false,
 };
 
