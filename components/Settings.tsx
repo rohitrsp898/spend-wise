@@ -85,10 +85,10 @@ const SettingsView: React.FC<SettingsProps> = ({ settings, categories, onUpdateS
               onChange={e => setCurrency(e.target.value)}
               className="w-full mt-1 p-3 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:border-blue-500 transition-colors"
             >
+              <option value="₹">INR (₹)</option>
               <option value="$">USD ($)</option>
               <option value="€">EUR (€)</option>
               <option value="£">GBP (£)</option>
-              <option value="₹">INR (₹)</option>
               <option value="¥">JPY (¥)</option>
               <option value="C$">CAD (C$)</option>
               <option value="A$">AUD (A$)</option>
