@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { UserSettings, Category } from '../types';
-import { Save, Plus, Trash2 } from 'lucide-react';
+import { Save, Plus, Trash2, User as UserIcon } from 'lucide-react';
 
 interface SettingsProps {
   settings: UserSettings;
   categories: Category[];
   onUpdateSettings: (s: UserSettings) => void;
   onUpdateCategories: (c: Category[]) => void;
+  user?: {
+    displayName: string | null;
+    email: string | null;
+    photoURL: string | null;
+  } | null;
 }
 
-const SettingsView: React.FC<SettingsProps> = ({ settings, categories, onUpdateSettings, onUpdateCategories }) => {
+const SettingsView: React.FC<SettingsProps> = ({ settings, categories, onUpdateSettings, onUpdateCategories, user }) => {
   const [budget, setBudget] = useState(settings.monthlyBudget.toString());
   const [currency, setCurrency] = useState(settings.currencySymbol);
   const [newCatName, setNewCatName] = useState('');
@@ -43,6 +48,24 @@ const SettingsView: React.FC<SettingsProps> = ({ settings, categories, onUpdateS
 
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-500">
+
+      {/* User Profile Card */}
+      {user && (
+        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 overflow-hidden border-2 border-white shadow-sm">
+            {user.photoURL ? (
+              <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <UserIcon size={32} />
+            )}
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">{user.displayName || 'User'}</h2>
+            <p className="text-sm text-gray-500">{user.email || 'No email associated'}</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
         <h2 className="text-lg font-bold text-gray-900 mb-4">General Preferences</h2>
         <div className="space-y-4">

@@ -159,6 +159,7 @@ const App: React.FC = () => {
             categories={categories}
             onUpdateSettings={handleUpdateSettings}
             onUpdateCategories={handleUpdateCategories}
+            user={user}
           />
         </div>
       </>
