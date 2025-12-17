@@ -34,8 +34,8 @@ export const generateFinancialInsights = async (
       ${Object.entries(categoryTotals).map(([cat, amount]) => `- ${cat}: ${currency}${amount.toFixed(2)}`).join('\n')}
 
       Please provide:
-      1. A brief 1-sentence analysis of the spending habits.
-      2. Three actionable bullet points to save money based on these specific categories.
+      1. A precise, simple and clean sentence analysis of the spending habits.
+      2. Three actionable bullet points to save money based on these specific categories make it to the point.
       3. A motivating closing sentence.
       Keep the tone professional yet encouraging.
     `;
