@@ -1,14 +1,17 @@
 import React from 'react';
 import { ViewState } from '../types';
-import { LayoutDashboard, List, PieChart, Settings, Sparkles } from 'lucide-react';
+import { LayoutDashboard, List, PieChart, Settings, Sparkles, LogOut } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
   activeView: ViewState;
   onNavigate: (view: ViewState) => void;
+  userPhoto?: string | null;
+  userName?: string | null;
+  onLogout?: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate }) => {
+const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate, userPhoto, userName, onLogout }) => {
   const navItems: { view: ViewState; label: string; icon: React.ReactNode }[] = [
     { view: 'DASHBOARD', label: 'Home', icon: <LayoutDashboard size={20} /> },
     { view: 'EXPENSES', label: 'List', icon: <List size={20} /> },
@@ -23,12 +26,26 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate }) => 
         <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
           SpendWise
         </h1>
-        <button 
-          onClick={() => onNavigate('SETTINGS')}
-          className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${activeView === 'SETTINGS' ? 'text-blue-600 bg-blue-50' : 'text-gray-500'}`}
-        >
-          <Settings size={20} />
-        </button>
+        <div className="flex items-center gap-3">
+          {userPhoto && (
+            <img src={userPhoto} alt="Profile" className="w-8 h-8 rounded-full border border-gray-100 shadow-sm" />
+          )}
+          <button
+            onClick={() => onNavigate('SETTINGS')}
+            className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${activeView === 'SETTINGS' ? 'text-blue-600 bg-blue-50' : 'text-gray-500'}`}
+          >
+            <Settings size={20} />
+          </button>
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="p-2 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+              title="Sign Out"
+            >
+              <LogOut size={20} />
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Main Content Area */}
@@ -45,11 +62,10 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate }) => 
             <button
               key={item.view}
               onClick={() => onNavigate(item.view)}
-              className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${
-                activeView === item.view 
-                  ? 'text-blue-600' 
+              className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeView === item.view
+                  ? 'text-blue-600'
                   : 'text-gray-400 hover:text-gray-600'
-              }`}
+                }`}
             >
               <div className={`p-1 rounded-xl transition-all ${activeView === item.view ? 'bg-blue-50' : ''}`}>
                 {item.icon}

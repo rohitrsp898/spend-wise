@@ -1,100 +1,101 @@
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  deleteDoc, 
-  onSnapshot, 
-  query, 
-  orderBy 
+import {
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  onSnapshot,
+  query,
+  orderBy
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { Expense, Category, UserSettings } from '../types';
 import { DEFAULT_CATEGORIES, DEFAULT_SETTINGS } from '../constants';
 
-// We use a fixed document ID for settings since this is a single-user view for now.
-// In a multi-user app, you would nest these under a user ID from Firebase Auth.
 const SETTINGS_DOC_ID = 'user_settings';
+
+// --- HELPERS ---
+const getUserCollection = (userId: string, collectionName: string) => {
+  return collection(db, 'users', userId, collectionName);
+};
+
+const getUserDoc = (userId: string, collectionName: string, docId: string) => {
+  return doc(db, 'users', userId, collectionName, docId);
+};
 
 // --- EXPENSES ---
 
-export const subscribeExpenses = (onUpdate: (expenses: Expense[]) => void) => {
-  const q = query(collection(db, 'expenses'), orderBy('date', 'desc'));
+export const subscribeExpenses = (userId: string, onUpdate: (expenses: Expense[]) => void) => {
+  const q = query(getUserCollection(userId, 'expenses'), orderBy('date', 'desc'));
   return onSnapshot(q, (snapshot) => {
-    const expenses = snapshot.docs.map(doc => ({ 
-      id: doc.id, 
-      ...doc.data() 
+    const expenses = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
     } as Expense));
     onUpdate(expenses);
   });
 };
 
-export const addExpense = async (expense: Omit<Expense, 'id'>) => {
-  // Create a new document reference with an auto-generated ID
-  const newDocRef = doc(collection(db, 'expenses'));
+export const addExpense = async (userId: string, expense: Omit<Expense, 'id'>) => {
+  const newDocRef = doc(getUserCollection(userId, 'expenses'));
   const newExpense: Expense = { ...expense, id: newDocRef.id };
   await setDoc(newDocRef, newExpense);
 };
 
-export const updateExpense = async (expense: Expense) => {
+export const updateExpense = async (userId: string, expense: Expense) => {
   if (!expense.id) return;
-  const docRef = doc(db, 'expenses', expense.id);
+  const docRef = getUserDoc(userId, 'expenses', expense.id);
   await setDoc(docRef, expense, { merge: true });
 };
 
-export const deleteExpense = async (id: string) => {
-  await deleteDoc(doc(db, 'expenses', id));
+export const deleteExpense = async (userId: string, id: string) => {
+  await deleteDoc(getUserDoc(userId, 'expenses', id));
 };
 
 // --- CATEGORIES ---
 
-export const subscribeCategories = (onUpdate: (categories: Category[]) => void) => {
-  return onSnapshot(collection(db, 'categories'), (snapshot) => {
+export const subscribeCategories = (userId: string, onUpdate: (categories: Category[]) => void) => {
+  return onSnapshot(getUserCollection(userId, 'categories'), (snapshot) => {
     if (snapshot.empty) {
-      // Seed default categories if database is empty
-      DEFAULT_CATEGORIES.forEach(c => setDoc(doc(db, 'categories', c.id), c));
+      // Seed default categories for this new user
+      DEFAULT_CATEGORIES.forEach(c => setDoc(getUserDoc(userId, 'categories', c.id), c));
     } else {
-      const categories = snapshot.docs.map(doc => ({ 
-        id: doc.id, 
-        ...doc.data() 
+      const categories = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
       } as Category));
       onUpdate(categories);
     }
   });
 };
 
-export const addCategory = async (category: Category) => {
-  await setDoc(doc(db, 'categories', category.id), category);
+export const addCategory = async (userId: string, category: Category) => {
+  await setDoc(getUserDoc(userId, 'categories', category.id), category);
 };
 
-export const updateCategoryList = async (categories: Category[]) => {
-  // This function is kept for compatibility with the Settings component logic,
-  // but ideally we should update individual categories. 
-  // For now, we assume the UI handles the list state, and we just sync changes.
-  // This is a naive implementation that just overwrites/adds. 
-  // Deleting is harder with this signature, but sufficient for now.
+export const updateCategoryList = async (userId: string, categories: Category[]) => {
   for (const cat of categories) {
-    await setDoc(doc(db, 'categories', cat.id), cat);
+    await setDoc(getUserDoc(userId, 'categories', cat.id), cat);
   }
 };
 
-export const deleteCategory = async (id: string) => {
-    await deleteDoc(doc(db, 'categories', id));
+export const deleteCategory = async (userId: string, id: string) => {
+  await deleteDoc(getUserDoc(userId, 'categories', id));
 };
 
 // --- SETTINGS ---
 
-export const subscribeSettings = (onUpdate: (settings: UserSettings) => void) => {
-  return onSnapshot(doc(db, 'settings', SETTINGS_DOC_ID), (docSnap) => {
+export const subscribeSettings = (userId: string, onUpdate: (settings: UserSettings) => void) => {
+  return onSnapshot(getUserDoc(userId, 'settings', SETTINGS_DOC_ID), (docSnap) => {
     if (docSnap.exists()) {
       onUpdate(docSnap.data() as UserSettings);
     } else {
       // Create default settings if not exists
-      setDoc(doc(db, 'settings', SETTINGS_DOC_ID), DEFAULT_SETTINGS);
+      setDoc(getUserDoc(userId, 'settings', SETTINGS_DOC_ID), DEFAULT_SETTINGS);
       onUpdate(DEFAULT_SETTINGS);
     }
   });
 };
 
-export const saveSettings = async (settings: UserSettings) => {
-  await setDoc(doc(db, 'settings', SETTINGS_DOC_ID), settings);
+export const saveSettings = async (userId: string, settings: UserSettings) => {
+  await setDoc(getUserDoc(userId, 'settings', SETTINGS_DOC_ID), settings);
 };
