@@ -38,7 +38,7 @@ const Login: React.FC = () => {
             }
         } catch (err: any) {
             console.error("Auth Error:", err);
-            let msg = "Authentication failed.";
+            let msg = `Authentication failed: ${err.code || err.message}`;
             if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') msg = "Invalid email or password.";
             else if (err.code === 'auth/email-already-in-use') msg = "Email is already registered.";
             else if (err.code === 'auth/weak-password') msg = "Password should be at least 6 characters.";

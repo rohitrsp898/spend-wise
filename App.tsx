@@ -139,27 +139,30 @@ const App: React.FC = () => {
       return <Login />;
     }
 
-    const content = (() => {
-      switch (activeView) {
-        case 'DASHBOARD':
-          return <Dashboard expenses={expenses} categories={categories} settings={settings} />;
-        case 'EXPENSES':
-          return <ExpenseList expenses={expenses} categories={categories} settings={settings} onDelete={handleDeleteExpense} onEdit={openEditModal} />;
-        case 'REPORTS':
-          return <Reports expenses={expenses} categories={categories} settings={settings} />;
-        case 'AI_INSIGHTS':
-          return <AIAdvisor expenses={expenses} categories={categories} settings={settings} />;
-        case 'SETTINGS':
-          return <SettingsView
+    const content = (
+      <>
+        <div className={activeView === 'DASHBOARD' ? 'block' : 'hidden'}>
+          <Dashboard expenses={expenses} categories={categories} settings={settings} />
+        </div>
+        <div className={activeView === 'EXPENSES' ? 'block' : 'hidden'}>
+          <ExpenseList expenses={expenses} categories={categories} settings={settings} onDelete={handleDeleteExpense} onEdit={openEditModal} />
+        </div>
+        <div className={activeView === 'REPORTS' ? 'block' : 'hidden'}>
+          <Reports expenses={expenses} categories={categories} settings={settings} />
+        </div>
+        <div className={activeView === 'AI_INSIGHTS' ? 'block' : 'hidden'}>
+          <AIAdvisor expenses={expenses} categories={categories} settings={settings} />
+        </div>
+        <div className={activeView === 'SETTINGS' ? 'block' : 'hidden'}>
+          <SettingsView
             settings={settings}
             categories={categories}
             onUpdateSettings={handleUpdateSettings}
             onUpdateCategories={handleUpdateCategories}
-          />;
-        default:
-          return <Dashboard expenses={expenses} categories={categories} settings={settings} />;
-      }
-    })();
+          />
+        </div>
+      </>
+    );
 
     return (
       <Layout
