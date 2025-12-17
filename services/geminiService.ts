@@ -2,8 +2,9 @@ import { GoogleGenAI } from "@google/genai";
 import { Expense, Category } from "../types";
 
 const getAIClient = () => {
-  const apiKey = process.env.API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
+    console.error("Gemini API Key is missing in environment variables!");
     throw new Error("API Key is missing");
   }
   return new GoogleGenAI({ apiKey });
@@ -16,7 +17,7 @@ export const generateFinancialInsights = async (
 ): Promise<string> => {
   try {
     const ai = getAIClient();
-    
+
     // Prepare a summary to minimize token usage and protect privacy (no raw PII)
     const categoryTotals = expenses.reduce((acc, curr) => {
       const cat = categories.find(c => c.id === curr.categoryId)?.name || 'Unknown';
@@ -33,7 +34,7 @@ export const generateFinancialInsights = async (
       ${Object.entries(categoryTotals).map(([cat, amount]) => `- ${cat}: ${currency}${amount.toFixed(2)}`).join('\n')}
 
       Please provide:
-      1. A brief 2-sentence analysis of the spending habits.
+      1. A brief 1-sentence analysis of the spending habits.
       2. Three actionable bullet points to save money based on these specific categories.
       3. A motivating closing sentence.
       Keep the tone professional yet encouraging.
