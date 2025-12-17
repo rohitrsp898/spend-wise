@@ -87,7 +87,16 @@ export const deleteCategory = async (userId: string, id: string) => {
 export const subscribeSettings = (userId: string, onUpdate: (settings: UserSettings) => void) => {
   return onSnapshot(getUserDoc(userId, 'settings', SETTINGS_DOC_ID), (docSnap) => {
     if (docSnap.exists()) {
-      onUpdate(docSnap.data() as UserSettings);
+      const data = docSnap.data() as UserSettings;
+      // Auto-migrate legacy '$' currency to '₹' for existing users
+      if (data.currencySymbol === '$') {
+        const newSettings = { ...data, currencySymbol: '₹' };
+        // Don't await this, let it happen in background
+        setDoc(getUserDoc(userId, 'settings', SETTINGS_DOC_ID), newSettings, { merge: true });
+        onUpdate(newSettings);
+      } else {
+        onUpdate(data);
+      }
     } else {
       // Create default settings if not exists
       setDoc(getUserDoc(userId, 'settings', SETTINGS_DOC_ID), DEFAULT_SETTINGS);

@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate, userP
             <img src={userPhoto} alt="Profile" className="w-8 h-8 rounded-full border border-gray-100 shadow-sm" />
           )}
           <button
-            onClick={() => onNavigate('SETTINGS')}
+            onClick={() => onNavigate(activeView === 'SETTINGS' ? 'DASHBOARD' : 'SETTINGS')}
             className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${activeView === 'SETTINGS' ? 'text-blue-600 bg-blue-50' : 'text-gray-500'}`}
           >
             <Settings size={20} />
@@ -63,8 +63,8 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate, userP
               key={item.view}
               onClick={() => onNavigate(item.view)}
               className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeView === item.view
-                  ? 'text-blue-600'
-                  : 'text-gray-400 hover:text-gray-600'
+                ? 'text-blue-600'
+                : 'text-gray-400 hover:text-gray-600'
                 }`}
             >
               <div className={`p-1 rounded-xl transition-all ${activeView === item.view ? 'bg-blue-50' : ''}`}>

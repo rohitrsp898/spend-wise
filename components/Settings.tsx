@@ -19,6 +19,12 @@ const SettingsView: React.FC<SettingsProps> = ({ settings, categories, onUpdateS
   const [currency, setCurrency] = useState(settings.currencySymbol);
   const [newCatName, setNewCatName] = useState('');
 
+  // Sync local state with props (in case settings update from DB/Migration)
+  React.useEffect(() => {
+    setBudget(settings.monthlyBudget.toString());
+    setCurrency(settings.currencySymbol);
+  }, [settings]);
+
   const handleSave = () => {
     onUpdateSettings({
       ...settings,
